@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     // === 各種変数を宣言 === //
+    public BasePlayer playerPrefab;     // プレハブ用変数(BasePlayer)
+    public BaseEnemy enemyPrefab;       // プレハブ用変数(BaseEnemy)
+
     public BasePlayer[] players;
     public BaseEnemy[] enemies;
 
@@ -29,13 +32,51 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // === 各配列の初期化 === //
-        players = new BasePlayer[4];        // プレイヤーを4体で初期化
+        players = new BasePlayer[1];        // プレイヤーを n体 で初期化
         enemies = new BaseEnemy[100];       // 敵を100体で初期化
+
+        // === キャラクターをスポーンさせる ===//
+        // indexの初期値を0とし; indexが "1より小さい"ときだけ; indexを1ずつ増やしながら繰り返す
+        for(int index = 0; index < 1; index++)
+        {
+            players[index] = Instantiate(playerPrefab);      // プレハブインスタンスの生成(BasePlayer)
+        }
+
+        // indexの初期値を0とし; indexが "100より小さい"ときだけ; indexを1ずつ増やしながら繰り返す
+        for (int index = 0; index < 100; index++)
+        {
+            enemies[index] = Instantiate(enemyPrefab);       // プレハブインスタンスの生成(BaseEnemy)
+        }
+
+        // === キャラクターを初期化する === //
+        for(int index = 0; index < 1; index++)
+        {   // プレイヤー達の初期化
+            players[index].Initialize( new Vector2(-3, 0) );
+        }
+
+        for(int index = 0; index < 100; index++)
+        {   // 敵はランダムな位置で初期化
+            Vector2 randomPos = Vector2.zero;
+            randomPos.x = 15;
+            randomPos.y = Random.Range(-5f, 5f);
+
+            enemies[index].Initialize( randomPos );
+        }
     }
 
     void Update()
     {
-        
+        // プレイヤーを全員動かす
+        for (int index = 0; index < 1; index++)
+        {
+            players[index].Movement();
+        }
+
+        // 敵を全員動かす
+        for (int index = 0; index < 100; index++)
+        {
+            enemies[index].Movement();
+        }
     }
 
     // === オブジェクトを登録するメソッド === //
