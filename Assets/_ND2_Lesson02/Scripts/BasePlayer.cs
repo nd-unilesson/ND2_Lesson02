@@ -6,7 +6,7 @@ public class BasePlayer : MonoBehaviour
     // === Protected Value === //
     protected Vector2 _inputMoveValue;      // (2次元ベクトル) 移動入力値
     protected float _inputShotValue;        // (小数点数) 攻撃入力値
-
+    protected GameManager _manager;         // (GameManager) ゲーム管理人
 
     void Start()
     {
@@ -26,9 +26,10 @@ public class BasePlayer : MonoBehaviour
     }
 
     // === 初期化メソッド === //
-    public void Initialize( Vector2 position )
+    public void Initialize( GameManager manager, Vector2 position )
     {
         transform.position = position;      // 初期位置
+        _manager = manager;                 // 管理人を覚える
     }
 
     // === 移動メソッド === //
@@ -44,6 +45,21 @@ public class BasePlayer : MonoBehaviour
     public void Shot()
     {
         Debug.Log($"{ transform.name } >> 攻撃");
+
+        // デバイスの入力がない場合は強制終了
+        if (_inputShotValue <= 0.5f) return;
+
+        // 管理人から弾丸配列の情報を取得
+        BaseBullet[] bullets = _manager.bullets;
+        for(int index = 0; index < 100; index++)
+        {   // 使ってない弾丸を見つける
+            if( bullets[index].gameObject.activeSelf == false )
+            {
+                bullets[index].Appear( transform.position, Vector3.right );    // 弾丸の出現処理
+
+                break;                      // 繰り返しの強制終了
+            }
+        }
     }
 
     // === 移動入力イベント === //
@@ -59,5 +75,4 @@ public class BasePlayer : MonoBehaviour
         Debug.Log($"攻撃入力値 = {value.Get<float>()}");
         _inputShotValue = value.Get<float>();       // 値を変数に保存
     }
-
 }

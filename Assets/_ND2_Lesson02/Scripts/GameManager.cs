@@ -13,9 +13,11 @@ public class GameManager : MonoBehaviour
     // === 各種変数を宣言 === //
     public BasePlayer playerPrefab;     // プレハブ用変数(BasePlayer)
     public BaseEnemy enemyPrefab;       // プレハブ用変数(BaseEnemy)
+    public BaseBullet bulletPrefab;     // プレハブ用変数(BaseBullet)
 
-    public BasePlayer[] players;
-    public BaseEnemy[] enemies;
+    public BasePlayer[] players;        // インスタンス用変数
+    public BaseEnemy[] enemies;         // インスタンス用変数
+    public BaseBullet[] bullets;        // インスタンス用変数
 
     // Start の上位互換 ※Start よりも速く実行される
     void Awake()
@@ -34,6 +36,7 @@ public class GameManager : MonoBehaviour
         // === 各配列の初期化 === //
         players = new BasePlayer[1];        // プレイヤーを n体 で初期化
         enemies = new BaseEnemy[100];       // 敵を100体で初期化
+        bullets = new BaseBullet[100];      // 弾丸を100体で初期化
 
         // === キャラクターをスポーンさせる ===//
         // indexの初期値を0とし; indexが "1より小さい"ときだけ; indexを1ずつ増やしながら繰り返す
@@ -48,10 +51,16 @@ public class GameManager : MonoBehaviour
             enemies[index] = Instantiate(enemyPrefab);       // プレハブインスタンスの生成(BaseEnemy)
         }
 
+        // indexの初期値を0とし; indexが "100より小さい"ときだけ; indexを1ずつ増やしながら繰り返す
+        for(int index = 0; index < 100; index++)
+        {
+            bullets[index] = Instantiate(bulletPrefab);      // プレハブインスタンスの生成(BaseBullet)
+        }
+
         // === キャラクターを初期化する === //
         for(int index = 0; index < 1; index++)
         {   // プレイヤー達の初期化
-            players[index].Initialize( new Vector2(-3, 0) );
+            players[index].Initialize( this, new Vector2(-3, 0) );
         }
 
         for(int index = 0; index < 100; index++)
@@ -62,6 +71,11 @@ public class GameManager : MonoBehaviour
 
             enemies[index].Initialize( randomPos );
         }
+
+        for(int index = 0; index < 100; index++)
+        {
+            bullets[index].Initialize( players[0].transform.position, Vector3.right );
+        }
     }
 
     void Update()
@@ -70,12 +84,19 @@ public class GameManager : MonoBehaviour
         for (int index = 0; index < 1; index++)
         {
             players[index].Movement();
+            players[index].Shot();
         }
 
         // 敵を全員動かす
         for (int index = 0; index < 100; index++)
         {
             enemies[index].Movement();
+        }
+
+        // 弾丸を全員動かす
+        for (int index = 0; index < 100; index++)
+        {
+            bullets[index].Movement();
         }
     }
 

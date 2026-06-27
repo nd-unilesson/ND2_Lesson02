@@ -165,8 +165,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   playerPrefab: {fileID: 6241858684354644227, guid: c1619a49cf099914aa4efd9e56b03f05, type: 3}
   enemyPrefab: {fileID: 3052652654455597944, guid: 56a81190fee75a84c9c3d6793a4faa8e, type: 3}
+  bulletPrefab: {fileID: 5395738650900765458, guid: 51fee333777df7e4c85d1e54177bec76, type: 3}
   players: []
   enemies: []
+  bullets: []
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
